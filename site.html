@@ -10,7 +10,7 @@
             text-align: center;
             margin-top: 50px;
             overflow: hidden;
-            background-color: #007BFF; /* Синий фон */
+            background-color: #D3D3D3; /* Светло-серый фон для главной страницы */
         }
         #loading-screen {
             position: fixed;
@@ -18,13 +18,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #888; /* Серый фон */
-            color: white;
+            background-color: gray; /* Серый фон */
+            color: white; /* Белый текст */
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            z-index: 200;
+            align-items: center;
+            font-size: 36px;
+            z-index: 1000; /* Используем высокий z-index, чтобы экран загрузки был на переднем плане */
         }
         #score {
             font-size: 36px;
@@ -35,6 +35,13 @@
             transform: translateX(-50%);
             z-index: 10;
             color: black; /* Черный текст для контраста */
+        }
+        #player-info {
+            position: fixed;
+            top: 10px;
+            left: 20px;
+            color: black;
+            font-size: 18px;
         }
         #click-button {
             position: fixed;
@@ -51,20 +58,25 @@
             width: 200px;
             height: 200px;
         }
-        .shop-button {
-            padding: 15px 30px;
+        #shop-button, #info-button, #daily-bonus-button {
+            padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
-            color: white;
-            background-color: #333;
-            border: none;
+            color: white; /* Белый текст для контраста */
+            background-color: #333; /* Темно-серый фон */
+            border: none; /* Убираем границу */
             position: fixed;
             bottom: 20px;
-            width: 250px; /* Одинаковая ширина кнопок магазина */
-            margin: 10px 0; /* Отступ между кнопками */
         }
-        #shop-button { left: 20px; }
-        #info-button { right: 20px; }
+        #shop-button { /* Кнопка Магазина слева */
+            left: 20px;
+        }
+        #daily-bonus-button { /* Кнопка Ежедневный бонус между Магазином и Информацией */
+            left: 120px;
+        }
+        #info-button { /* Кнопка Информация справа */
+            right: 20px;
+        }
         #info-container, #shop-page {
             display: none; /* Скрываем по умолчанию */
             position: fixed;
@@ -72,7 +84,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: white;
+            background-color: white; /* Белый фон для контейнера информации и магазина */
             z-index: 100;
             overflow: auto;
             padding: 20px;
@@ -82,7 +94,7 @@
             max-width: 600px;
             margin: auto;
             padding: 20px;
-            background-color: white;
+            background-color: #F5F5F5; /* Серый фон для информации и магазина */
             border-radius: 10px;
             text-align: center;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -94,9 +106,9 @@
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
-            color: white;
-            background-color: #333;
-            border: none;
+            color: white; /* Белый текст для контраста */
+            background-color: #333; /* Темно-серый фон */
+            border: none; /* Убираем границу */
         }
         #shop-title {
             font-size: 24px;
@@ -107,28 +119,35 @@
             font-size: 18px;
             cursor: pointer;
             margin-top: 20px;
-            color: white;
-            background-color: #333;
-            border: none;
+            color: white; /* Белый текст для контраста */
+            background-color: #333; /* Темно-серый фон */
+            border: none; /* Убираем границу */
             display: block;
             margin-left: auto;
             margin-right: auto;
         }
+        .notification {
+            background-color: #F5F5F5; /* Серый фон для уведомлений */
+            color: black; /* Черный текст */
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
-    <div id="loading-screen">
-        <h1>TWG TOKEN</h1>
-        <p>By Tweegy Studio</p>
-        <p>При поддержке Wester Project</p>
-    </div>
+
+    <div id="loading-screen">TWG TOKEN</div> <!-- Экран загрузки -->
+    
     <div id="score">Баланс: 0 TWG</div>
+    <div id="player-info">Ник: <span id="player-name">Игрок</span> | Статус: <span id="vip-status">Обычный</span></div>
     <div id="click-button">
         <img id="click-image" src="money.png" alt="Клик">
     </div>
-    <button id="shop-button" class="shop-button">Магазин</button>
-    <button id="info-button" class="shop-button">Информация</button>
-    
+    <button id="shop-button">Магазин</button>
+    <button id="daily-bonus-button">Ежедневный бонус</button>
+    <button id="info-button">Информация</button>
     <div id="info-container">
         <div id="info-content">
             <h2>Информация</h2>
@@ -143,28 +162,41 @@
     <div id="shop-page">
         <div id="shop-content">
             <h2 id="shop-title">Магазин</h2>
-            <button id="upgrade-button" class="shop-button">Улучшить (Цена: 10 TWG, +1 клик: 1)</button>
-            <button id="auto-income-button" class="shop-button">Купить автодоход (Цена: 50 TWG, +1 автодоход: 0)</button>
-            <button id="gold-status-button" class="shop-button">Купить Gold статус (Цена: 100 TWG)</button>
-            <button id="daily-bonus-button" class="shop-button">Получить ежедневный бонус</button>
+            <button id="upgrade-button">Улучшить (Цена: 10 TWG, +1 клик: 1)</button>
+            <button id="auto-income-button">Купить автодоход (Цена: 50 TWG, +1 автодоход: 0)</button>
+            <button id="double-points-button">Купить двойные очки на 60 секунд (Цена: 30 TWG)</button>
+            <button id="vip-button">Купить VIP статус (Цена: 100 TWG)</button>
+            <button id="gold-button">Купить Gold статус (Цена: 200 TWG)</button>
             <button id="close-shop-button">Закрыть</button>
+            <div id="daily-bonus-notification" class="notification" style="display: none;">
+                Вы уже получили ежедневный бонус сегодня.
+            </div>
         </div>
     </div>
 
     <script>
+        // Скрыть экран загрузки после загрузки содержимого
+        window.onload = function() {
+            document.getElementById("loading-screen").style.display = "none"; // Скрываем экран загрузки
+        };
+
         let score = parseInt(localStorage.getItem('score')) || 0;
         let pointsPerClick = parseInt(localStorage.getItem('pointsPerClick')) || 1;
         let autoIncome = parseInt(localStorage.getItem('autoIncome')) || 0;
         let playerName = localStorage.getItem('playerName') || 'Игрок';
         let isVip = localStorage.getItem('isVip') === 'true'; // Проверяем VIP статус
+        let isGold = localStorage.getItem('isGold') === 'true'; // Проверяем Gold статус
+        let lastDailyBonusDate = localStorage.getItem('lastDailyBonusDate');
 
         const clickButton = document.getElementById('click-button');
         const upgradeButton = document.getElementById('upgrade-button');
         const autoIncomeButton = document.getElementById('auto-income-button');
-        const goldStatusButton = document.getElementById('gold-status-button');
-        const dailyBonusButton = document.getElementById('daily-bonus-button');
+        const doublePointsButton = document.getElementById('double-points-button');
+        const vipButton = document.getElementById('vip-button');
+        const goldButton = document.getElementById('gold-button');
         const scoreDisplay = document.getElementById('score');
         const shopButton = document.getElementById('shop-button');
+        const dailyBonusButton = document.getElementById('daily-bonus-button');
         const shopPage = document.getElementById('shop-page');
         const infoButton = document.getElementById('info-button');
         const infoContainer = document.getElementById('info-container');
@@ -173,63 +205,84 @@
         const closeInfoButton = document.getElementById('close-info-button');
         const closeShopButton = document.getElementById('close-shop-button');
         const telegramButton = document.getElementById('telegram-button');
-        const loadingScreen = document.getElementById('loading-screen');
+        const dailyBonusNotification = document.getElementById('daily-bonus-notification');
 
-        // Обновление отображения счета
         function updateScore() {
-            scoreDisplay.textContent = 'Баланс: ' + score;
+            scoreDisplay.textContent = `Баланс: ${score} TWG`;
             localStorage.setItem('score', score);
         }
 
-        // Обновление VIP статуса в профиле
-        function updateVipStatus() {
+        function updateStatus() {
             if (isVip) {
-                vipStatusDisplay.textContent = 'Статус: VIP';
-                pointsPerClick++;
+                vipStatusDisplay.textContent = 'VIP';
+            } else if (isGold) {
+                vipStatusDisplay.textContent = 'Gold';
             } else {
-                vipStatusDisplay.textContent = 'Статус: Обычный';
+                vipStatusDisplay.textContent = 'Обычный';
             }
             localStorage.setItem('pointsPerClick', pointsPerClick);
         }
 
-        // Обработчик кликов по картинке
+        function updateDailyBonusNotification() {
+            const now = new Date();
+            const lastDate = new Date(lastDailyBonusDate);
+
+            if (lastDate.toDateString() === now.toDateString()) {
+                dailyBonusNotification.style.display = 'block';
+                dailyBonusButton.disabled = true; // Делаем кнопку неактивной
+            } else {
+                dailyBonusNotification.style.display = 'none';
+                dailyBonusButton.disabled = false; // Восстанавливаем активность кнопки
+            }
+        }
+
         clickButton.addEventListener('click', function() {
             score += pointsPerClick;
             updateScore();
         });
 
-        // Функция автодохода (вызывается каждые 1000 миллисекунд (1 секунда))
         function autoIncomeFunction() {
             score += autoIncome;
             updateScore();
         }
 
-        // Обработчик клика по кнопке Магазина
         shopButton.addEventListener('click', function() {
             shopPage.style.display = 'block';
+            updateDailyBonusNotification();
         });
 
-        // Обработчик клика по кнопке Информация
+        dailyBonusButton.addEventListener('click', function() {
+            const now = new Date();
+            const lastDate = new Date(lastDailyBonusDate);
+
+            if (lastDate.toDateString() === now.toDateString()) {
+                alert('Вы уже получили ежедневный бонус сегодня.');
+            } else {
+                alert('Вы получили 10 TWG в качестве ежедневного бонуса!');
+                score += 10;
+                updateScore();
+                lastDailyBonusDate = now.toDateString();
+                localStorage.setItem('lastDailyBonusDate', lastDailyBonusDate);
+                updateDailyBonusNotification();
+            }
+        });
+
         infoButton.addEventListener('click', function() {
             infoContainer.style.display = 'block';
         });
 
-        // Обработчик клика по кнопке "Закрыть" для информации
         closeInfoButton.addEventListener('click', function() {
             infoContainer.style.display = 'none';
         });
 
-        // Обработчик клика по кнопке "Закрыть" для магазина
         closeShopButton.addEventListener('click', function() {
             shopPage.style.display = 'none';
         });
 
-        // Обработчик клика по кнопке Телеграм
         telegramButton.addEventListener('click', function() {
             window.open('https://t.me/Tweegy_Project');
         });
 
-        // Функция для изменения ника игрока
         function changePlayerName() {
             let newName = prompt("Введите новый ник:");
             if (newName) {
@@ -239,74 +292,85 @@
             }
         }
 
-        // Добавляем возможность изменения ника
         playerNameDisplay.addEventListener('click', changePlayerName);
 
-        // Запускаем автодоход
         setInterval(autoIncomeFunction, 1000);
 
-        // Обработчик клика по кнопке улучшения
         upgradeButton.addEventListener('click', function() {
             if (score >= 10) {
                 score -= 10;
                 pointsPerClick++;
-                if (isVip) pointsPerClick++; // Дополнительный клик для VIP
+                if (isVip || isGold) pointsPerClick++;
                 updateScore();
                 upgradeButton.textContent = 'Улучшить (Цена: 10 TWG, +1 клик: ' + pointsPerClick + ')';
             } else {
-                alert('Недостаточно TWG!');
+                alert('Недостаточно средств!');
             }
         });
 
-        // Обработчик клика по кнопке автодохода
         autoIncomeButton.addEventListener('click', function() {
             if (score >= 50) {
                 score -= 50;
                 autoIncome++;
                 updateScore();
                 autoIncomeButton.textContent = 'Купить автодоход (Цена: 50 TWG, +1 автодоход: ' + autoIncome + ')';
-                localStorage.setItem('autoIncome', autoIncome); // Сохраняем autoIncome
+                localStorage.setItem('autoIncome', autoIncome);
             } else {
-                alert('Недостаточно TWG!');
+                alert('Недостаточно средств!');
             }
         });
 
-        // Обработчик клика по кнопке Gold статуса
-        goldStatusButton.addEventListener('click', function() {
-            if (score >= 100) {
-                score -= 100;
-                // Логика активации Gold статуса
-                alert('Gold статус куплен!');
+        doublePointsButton.addEventListener('click', function() {
+            if (score >= 30) {
+                score -= 30;
                 updateScore();
             } else {
-                alert('Недостаточно TWG!');
+                alert('Недостаточно средств!');
             }
         });
 
-        // Обработчик клика по кнопке ежедневного бонуса
-        dailyBonusButton.addEventListener('click', function() {
-            // Логика получения ежедневного бонуса
-            alert('Вы получили свой ежедневный бонус!');
+        vipButton.addEventListener('click', function() {
+            if (score >= 100 && !isVip) {
+                score -= 100;
+                isVip = true;
+                updateScore();
+                localStorage.setItem('isVip', 'true');
+                updateStatus();
+            } else if (isVip) {
+                alert('У вас уже есть VIP статус!');
+            } else {
+                alert('Недостаточно средств!');
+            }
         });
 
-        // Сохранение данных в localStorage при выходе с сайта
+        goldButton.addEventListener('click', function() {
+            if (score >= 200 && !isGold) {
+                score -= 200;
+                isGold = true;
+                updateScore();
+                localStorage.setItem('isGold', 'true');
+                updateStatus();
+            } else if (isGold) {
+                alert('У вас уже есть Gold статус!');
+            } else {
+                alert('Недостаточно средств!');
+            }
+        });
+
         window.addEventListener('beforeunload', function() {
             localStorage.setItem('score', score);
             localStorage.setItem('pointsPerClick', pointsPerClick);
             localStorage.setItem('autoIncome', autoIncome);
             localStorage.setItem('playerName', playerName);
             localStorage.setItem('isVip', isVip);
+            localStorage.setItem('isGold', isGold);
+            localStorage.setItem('lastDailyBonusDate', lastDailyBonusDate);
         });
 
-        // Обновляем счет и статус VIP при загрузке страницы
         updateScore();
-        updateVipStatus();
+        updateStatus();
+        updateDailyBonusNotification();
         playerNameDisplay.textContent = playerName;
-
-        // Закрываем экран загрузки через 10 секунды
-        setTimeout(() => {
-            loadingScreen.style.display = 'none';
-        }, 10000);
     </script>
 </body>
 </html>
