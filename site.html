@@ -10,10 +10,7 @@
             text-align: center;
             margin-top: 50px;
             overflow: hidden; /* Скрываем прокрутку */
-            background-image: url("fon.jpg"); /* Замените "your_background_image.jpg" на путь к вашему изображению */
-            background-size: cover; /* Заполняет весь экран */
-            background-repeat: no-repeat; /* Убираем повторение */
-            background-position: center; /* Центрируем изображение */
+            background-color: #f0f0f0; /* Серый фон */
         }
         #score {
             font-size: 36px;
@@ -23,7 +20,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 10; /* Для того, чтобы счет был поверх других элементов */
-            color: white; /* Белый текст для контраста */
+            color: black; /* Черный текст для контраста */
         }
         #click-button {
             position: fixed; /* Позиционируем по отношению к окну */
@@ -40,7 +37,7 @@
             width: 200px; /* Размер картинки */
             height: 200px; /* Размер картинки */
         }
-        #shop-button, #upgrade-button, #auto-income-button, #info-button, #back-button {
+        #shop-button, #upgrade-button, #auto-income-button, #info-button, #back-button, #close-info-button, #close-shop-button {
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
@@ -48,7 +45,7 @@
             display: inline-block; /* Размещение кнопок рядом */
             margin-left: 10px; /* Отступ между кнопками */
             color: white; /* Белый текст для контраста */
-            background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
+            background-color: #333; /* Темно-серый фон */
             border: none; /* Убираем границу */
         }
         #shop-container {
@@ -72,14 +69,31 @@
             display: none; /* Скрываем футер */
         }
         #info-container { /* Стиль для блока информации */
+            display: none; /* Скрываем по умолчанию */
             position: fixed;
-            bottom: 100px;
-            right: 20px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
-            padding: 10px;
-            border-radius: 5px;
-            display: none; /* Скрываем по умолчанию */
+            padding: 20px;
+            z-index: 100; /* Чтобы страница была поверх всех */
+        }
+        #info-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        #close-info-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
         }
         #shop-page { /* Стиль для страницы магазина */
             display: none;
@@ -102,12 +116,21 @@
             border-radius: 10px;
             text-align: center;
         }
-        #back-button {
+        #close-shop-button {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            top: 20px;
+            right: 20px;
+        }
+        #telegram-button { /* Стиль для кнопки Телеграм */
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
             color: white; /* Белый текст для контраста */
-            background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
+            background-color: #333; /* Темно-серый фон */
             border: none; /* Убираем границу */
         }
     </style>
@@ -125,8 +148,12 @@
     <button id="info-button">Информация</button>
 
     <div id="info-container">
-        <p>Версия: 1.0</p>
-        <p>Ник: <span id="player-name">Игрок</span></p>
+        <div id="info-content">
+            <h2>Информация</h2>
+            <p>Версия: 1.0</p>
+            <p>Ник: <span id="player-name">Игрок</span></p>
+            <button id="close-info-button">Закрыть</button>
+        </div>
     </div>
 
     <div id="shop-page">
@@ -134,9 +161,11 @@
             <h2>Магазин</h2>
             <button id="upgrade-button">Улучшить (Цена: 10 TWG, +1 клик: 1)</button>
             <button id="auto-income-button">Купить автодоход (Цена: 50 TWG, +1 автодоход: 0)</button>
-            <button id="back-button">Назад</button>
+            <button id="close-shop-button">Закрыть</button>
         </div>
     </div>
+
+    <button id="telegram-button">Telegram</button>
 
     <script>
         let score = parseInt(localStorage.getItem('score')) || 0;
@@ -155,6 +184,9 @@
         const infoContainer = document.getElementById('info-container');
         const playerNameDisplay = document.getElementById('player-name');
         const backButton = document.getElementById('back-button');
+        const closeInfoButton = document.getElementById('close-info-button');
+        const closeShopButton = document.getElementById('close-shop-button');
+        const telegramButton = document.getElementById('telegram-button');
 
         // Обновление отображения счета
         function updateScore() {
@@ -174,19 +206,29 @@
             updateScore();
         }
 
-        // Обработчик клика по кнопке Магазин
+        // Обработчик клика по кнопке Магазина
         shopButton.addEventListener('click', function() {
             shopPage.style.display = 'block';
         });
 
         // Обработчик клика по кнопке информации
         infoButton.addEventListener('click', function() {
-            infoContainer.style.display = infoContainer.style.display === 'none' ? 'block' : 'none';
+            infoContainer.style.display = 'block';
         });
 
-        // Обработчик клика по кнопке "Назад"
-        backButton.addEventListener('click', function() {
+        // Обработчик клика по кнопке "Закрыть" для информации
+        closeInfoButton.addEventListener('click', function() {
+            infoContainer.style.display = 'none';
+        });
+
+        // Обработчик клика по кнопке "Закрыть" для магазина
+        closeShopButton.addEventListener('click', function() {
             shopPage.style.display = 'none';
+        });
+
+        // Обработчик клика по кнопке Телеграм
+        telegramButton.addEventListener('click', function() {
+            window.open('https://t.me/your_telegram_channel'); // Замените "your_telegram_channel" на ваш канал
         });
 
         // Функция для изменения ника игрока
