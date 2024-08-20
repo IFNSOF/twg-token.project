@@ -10,7 +10,10 @@
             text-align: center;
             margin-top: 50px;
             overflow: hidden; /* Скрываем прокрутку */
-            background-color: #f0f0f0; /* Светлый фон */
+            background-image: url("fon.jpg"); /* Замените "your_background_image.jpg" на путь к вашему изображению */
+            background-size: cover; /* Заполняет весь экран */
+            background-repeat: no-repeat; /* Убираем повторение */
+            background-position: center; /* Центрируем изображение */
         }
         #score {
             font-size: 36px;
@@ -20,6 +23,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 10; /* Для того, чтобы счет был поверх других элементов */
+            color: white; /* Белый текст для контраста */
         }
         #click-button {
             position: fixed; /* Позиционируем по отношению к окну */
@@ -43,6 +47,9 @@
             margin: 5px;
             display: inline-block; /* Размещение кнопок рядом */
             margin-left: 10px; /* Отступ между кнопками */
+            color: white; /* Белый текст для контраста */
+            background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
+            border: none; /* Убираем границу */
         }
         #shop-container {
             margin-top: 50px;
@@ -99,6 +106,9 @@
             position: fixed;
             bottom: 20px;
             left: 20px;
+            color: white; /* Белый текст для контраста */
+            background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
+            border: none; /* Убираем границу */
         }
     </style>
 </head>
@@ -214,6 +224,7 @@
                 autoIncome++;
                 updateScore();
                 autoIncomeButton.textContent = 'Купить автодоход (Цена: 50 TWG, +1 автодоход: ' + autoIncome + ')';
+                localStorage.setItem('autoIncome', autoIncome); // Сохраняем autoIncome
             } else {
                 alert('Недостаточно средств!');
             }
