@@ -12,6 +12,20 @@
             overflow: hidden;
             background-color: #007BFF; /* Синий фон */
         }
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: gray; /* Серый фон */
+            color: white; /* Белый текст */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            z-index: 1000; /* Используем высокий z-index, чтобы экран загрузки был на переднем плане */
+        }
         #score {
             font-size: 36px;
             margin-top: 20px;
@@ -106,6 +120,8 @@
 </head>
 <body>
 
+    <div id="loading-screen">TWG TOKEN</div> <!-- Экран загрузки -->
+    
     <div id="score">Баланс: 0 TWG</div>
     <div id="click-button">
         <img id="click-image" src="money.png" alt="Клик">
@@ -115,7 +131,7 @@
     <div id="info-container">
         <div id="info-content">
             <h2>Информация</h2>
-            <p>Версия: 1.0</p>
+            <p>Версия: Beta 1.0</p>
             <p>Ник: <span id="player-name">Игрок</span></p>
             <p id="vip-status">Статус: Обычный</p>
             <button id="telegram-button">Telegram</button>
@@ -128,7 +144,6 @@
             <h2 id="shop-title">Магазин</h2>
             <button id="upgrade-button">Улучшить (Цена: 10 TWG, +1 клик: 1)</button>
             <button id="auto-income-button">Купить автодоход (Цена: 50 TWG, +1 автодоход: 0)</button>
-            <button id="extra-points-button">Купить дополнительные очки (Цена: 20 TWG, +10 очков)</button>
             <button id="double-points-button">Купить двойные очки на 60 секунд (Цена: 30 TWG)</button>
             <button id="vip-button">Купить VIP статус (Цена: 100 TWG)</button>
             <button id="close-shop-button">Закрыть</button>
@@ -136,11 +151,16 @@
     </div>
 
     <script>
+        // Скрыть экран загрузки после загрузки содержимого
+        window.onload = function() {
+            document.getElementById("loading-screen").style.display = "none"; // Скрываем экран загрузки
+        };
+
         let score = parseInt(localStorage.getItem('score')) || 0;
         let pointsPerClick = parseInt(localStorage.getItem('pointsPerClick')) || 1;
         let autoIncome = parseInt(localStorage.getItem('autoIncome')) || 0;
         let playerName = localStorage.getItem('playerName') || 'Игрок';
-        let isVip = localStorage.getItem('isVip') === 'true'; // Проверяем VIP статус
+        let isVip = localStorage.getItem('isVip') === 'true'; // Проверяем VIP статус 
 
         const clickButton = document.getElementById('click-button');
         const upgradeButton = document.getElementById('upgrade-button');
@@ -250,17 +270,6 @@
                 updateScore();
                 autoIncomeButton.textContent = 'Купить автодоход (Цена: 50 TWG, +1 автодоход: ' + autoIncome + ')';
                 localStorage.setItem('autoIncome', autoIncome); // Сохраняем autoIncome
-            } else {
-                alert('Недостаточно средств!');
-            }
-        });
-
-        // Обработчик клика по кнопке дополнительных очков
-        extraPointsButton.addEventListener('click', function() {
-            if (score >= 20) {
-                score -= 20;
-                score += 10; // Добавляем дополнительные очки
-                updateScore();
             } else {
                 alert('Недостаточно средств!');
             }
