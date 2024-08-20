@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TWG TOKEN</title>
     <style>
-        /* Ваши стили остаются без изменений */
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 50px;
-            overflow: hidden;
-            background-color: #f0f0f0;
+            overflow: hidden; /* Скрываем прокрутку */
+            background-color: #007BFF; /* Синий фон */
         }
         #score {
             font-size: 36px;
@@ -20,121 +19,119 @@
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 10;
-            color: black;
+            z-index: 10; /* Для того, чтобы счет был поверх других элементов */
+            color: black; /* Черный текст для контраста */
         }
         #click-button {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 0;
-            margin: 0;
-            border: none;
-            background: none;
+            position: fixed; /* Позиционируем по отношению к окну */
+            top: 50%; /* По вертикали в середине экрана */
+            left: 50%; /* По горизонтали в середине экрана */
+            transform: translate(-50%, -50%); /* Центрируем кнопку */
+            padding: 0; /* Убираем отступы */
+            margin: 0; /* Убираем поля */
+            border: none; /* Убираем границу */
+            background: none; /* Убираем фон */
             cursor: pointer;
         }
         #click-image {
-            width: 200px;
-            height: 200px;
+            width: 200px; /* Размер картинки */
+            height: 200px; /* Размер картинки */
         }
-        #shop-button, #upgrade-button, #auto-income-button, #info-button, #close-info-button, #close-shop-button {
+        #shop-button, #upgrade-button, #auto-income-button, #info-button, #back-button, #close-info-button, #close-shop-button {
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
             margin: 5px;
-            display: inline-block;
-            margin-left: 10px;
-            color: white;
-            background-color: #333;
-            border: none;
+            display: inline-block; /* Размещение кнопок рядом */
+            margin-left: 10px; /* Отступ между кнопками */
+            color: white; /* Белый текст для контраста */
+            background-color: #333; /* Темно-серый фон */
+            border: none; /* Убираем границу */
         }
         #shop-container {
             margin-top: 50px;
-            text-align: center;
+            text-align: center; /* Выравниваем кнопки по центру */
         }
         #buttons-container {
             margin-top: 100px;
         }
-        #shop-button {
+        #shop-button { /* Стиль для кнопки Магазина */
             position: fixed;
             bottom: 20px;
             left: 20px;
         }
-        #info-button {
+        #info-button { /* Стиль для кнопки Информация */
             position: fixed;
             bottom: 20px;
             right: 20px;
         }
         footer {
-            display: none;
+            display: none; /* Скрываем футер */
         }
-        #info-container {
-            display: none;
+        #info-container { /* Стиль для блока информации */
+            display: none; /* Скрываем по умолчанию */
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.5);
             color: white;
-            z-index: 100;
             padding: 20px;
-            text-align: center;
-            overflow: auto;
+            z-index: 100; /* Чтобы страница была поверх всех */
         }
         #info-content {
-            position: relative;
+            position: absolute;
             top: 50%;
-            transform: translateY(-50%);
+            left: 50%;
+            transform: translate(-50%, -50%);
             background-color: white;
-            color: black;
             padding: 20px;
             border-radius: 10px;
+            text-align: center;
         }
         #close-info-button {
-            position: absolute;
+            position: fixed;
             top: 20px;
             right: 20px;
-            cursor: pointer;
         }
-        #shop-page {
+        #shop-page { /* Стиль для страницы магазина */
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.5);
             color: white;
-            z-index: 100;
-            padding: 20px;
-            text-align: center;
-            overflow: auto;
+            z-index: 100; /* Чтобы страница была поверх всех */
         }
         #shop-content {
-            position: relative;
+            position: absolute;
             top: 50%;
-            transform: translateY(-50%);
-            background-color: white;
-            color: black;
+            left: 50%;
+            transform: translate(-50%, -50%);
             padding: 20px;
+            background-color: white;
             border-radius: 10px;
+            text-align: center;
         }
         #close-shop-button {
-            position: absolute;
+            position: fixed;
             top: 20px;
             right: 20px;
-            cursor: pointer;
         }
-        #telegram-button {
-            margin-top: 20px;
+        #telegram-button { /* Стиль для кнопки Телеграм */
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
-            color: white;
-            background-color: #333;
-            border: none;
+            color: white; /* Белый текст для контраста */
+            background-color: #333; /* Темно-серый фон */
+            border: none; /* Убираем границу */
         }
     </style>
 </head>
@@ -156,7 +153,6 @@
             <p>Версия: 1.0</p>
             <p>Ник: <span id="player-name">Игрок</span></p>
             <button id="close-info-button">Закрыть</button>
-            <button id="telegram-button">Telegram</button>
         </div>
     </div>
 
@@ -169,11 +165,12 @@
         </div>
     </div>
 
+    <button id="telegram-button">Telegram</button>
+
     <script>
         let score = parseInt(localStorage.getItem('score')) || 0;
         let pointsPerClick = parseInt(localStorage.getItem('pointsPerClick')) || 1;
         let autoIncome = parseInt(localStorage.getItem('autoIncome')) || 0;
-        let lastVisitTime = parseInt(localStorage.getItem('lastVisitTime')) || Date.now();
         let playerName = localStorage.getItem('playerName') || 'Игрок';
 
         const clickButton = document.getElementById('click-button');
@@ -182,9 +179,11 @@
         const scoreDisplay = document.getElementById('score');
         const shopButton = document.getElementById('shop-button');
         const shopPage = document.getElementById('shop-page');
+        const shopContent = document.getElementById('shop-content');
         const infoButton = document.getElementById('info-button');
         const infoContainer = document.getElementById('info-container');
         const playerNameDisplay = document.getElementById('player-name');
+        const backButton = document.getElementById('back-button');
         const closeInfoButton = document.getElementById('close-info-button');
         const closeShopButton = document.getElementById('close-shop-button');
         const telegramButton = document.getElementById('telegram-button');
@@ -195,25 +194,9 @@
             localStorage.setItem('score', score);
         }
 
-        // Обновление кнопок в магазине
-        function updateShopButtons() {
-            upgradeButton.textContent = 'Улучшить (Цена: 10 TWG, +1 клик: ' + pointsPerClick + ')';
-            autoIncomeButton.textContent = 'Купить автодоход (Цена: 50 TWG, +1 автодоход: ' + autoIncome + ')';
-        }
-
-        // Вычисляем заработанные очки за время отсутствия
-        function calculateOfflineIncome() {
-            const currentTime = Date.now();
-            const timeDifference = currentTime - lastVisitTime;
-            const earnedIncome = Math.floor(timeDifference / 1000) * autoIncome;
-            score += earnedIncome;
-            updateScore();
-            localStorage.setItem('lastVisitTime', currentTime);
-        }
-
         // Обработчик кликов по картинке
         clickButton.addEventListener('click', function() {
-            score += pointsPerClick;
+            score += pointsPerClick; // Добавляем очки за клик
             updateScore();
         });
 
@@ -226,7 +209,6 @@
         // Обработчик клика по кнопке Магазина
         shopButton.addEventListener('click', function() {
             shopPage.style.display = 'block';
-            updateShopButtons(); // Обновляем текст кнопок в магазине
         });
 
         // Обработчик клика по кнопке информации
@@ -265,20 +247,13 @@
         // Запускаем автодоход
         setInterval(autoIncomeFunction, 1000);
 
-        // Вычисляем доход за время отсутствия при загрузке страницы
-        calculateOfflineIncome();
-
-        // Обновляем кнопки магазина при загрузке страницы
-        updateShopButtons();
-
         // Обработчик клика по кнопке улучшения
         upgradeButton.addEventListener('click', function() {
             if (score >= 10) {
                 score -= 10;
                 pointsPerClick++;
                 updateScore();
-                localStorage.setItem('pointsPerClick', pointsPerClick); // Сохраняем pointsPerClick
-                updateShopButtons(); // Обновляем текст кнопок в магазине
+                upgradeButton.textContent = 'Улучшить (Цена: 10 TWG, +1 клик: ' + pointsPerClick + ')';
             } else {
                 alert('Недостаточно средств!');
             }
@@ -290,8 +265,8 @@
                 score -= 50;
                 autoIncome++;
                 updateScore();
+                autoIncomeButton.textContent = 'Купить автодоход (Цена: 50 TWG, +1 автодоход: ' + autoIncome + ')';
                 localStorage.setItem('autoIncome', autoIncome); // Сохраняем autoIncome
-                updateShopButtons(); // Обновляем текст кнопок в магазине
             } else {
                 alert('Недостаточно средств!');
             }
@@ -302,7 +277,6 @@
             localStorage.setItem('score', score);
             localStorage.setItem('pointsPerClick', pointsPerClick);
             localStorage.setItem('autoIncome', autoIncome);
-            localStorage.setItem('lastVisitTime', Date.now());
             localStorage.setItem('playerName', playerName);
         });
 
