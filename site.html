@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TWG TOKEN</title>
     <style>
+        /* Ваши стили остаются без изменений */
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -194,6 +195,12 @@
             localStorage.setItem('score', score);
         }
 
+        // Обновление кнопок в магазине
+        function updateShopButtons() {
+            upgradeButton.textContent = 'Улучшить (Цена: 10 TWG, +1 клик: ' + pointsPerClick + ')';
+            autoIncomeButton.textContent = 'Купить автодоход (Цена: 50 TWG, +1 автодоход: ' + autoIncome + ')';
+        }
+
         // Вычисляем заработанные очки за время отсутствия
         function calculateOfflineIncome() {
             const currentTime = Date.now();
@@ -219,6 +226,7 @@
         // Обработчик клика по кнопке Магазина
         shopButton.addEventListener('click', function() {
             shopPage.style.display = 'block';
+            updateShopButtons(); // Обновляем текст кнопок в магазине
         });
 
         // Обработчик клика по кнопке информации
@@ -260,13 +268,17 @@
         // Вычисляем доход за время отсутствия при загрузке страницы
         calculateOfflineIncome();
 
+        // Обновляем кнопки магазина при загрузке страницы
+        updateShopButtons();
+
         // Обработчик клика по кнопке улучшения
         upgradeButton.addEventListener('click', function() {
             if (score >= 10) {
                 score -= 10;
                 pointsPerClick++;
                 updateScore();
-                upgradeButton.textContent = 'Улучшить (Цена: 10 TWG, +1 клик: ' + pointsPerClick + ')';
+                localStorage.setItem('pointsPerClick', pointsPerClick); // Сохраняем pointsPerClick
+                updateShopButtons(); // Обновляем текст кнопок в магазине
             } else {
                 alert('Недостаточно средств!');
             }
@@ -278,8 +290,8 @@
                 score -= 50;
                 autoIncome++;
                 updateScore();
-                autoIncomeButton.textContent = 'Купить автодоход (Цена: 50 TWG, +1 автодоход: ' + autoIncome + ')';
-                localStorage.setItem('autoIncome', autoIncome);
+                localStorage.setItem('autoIncome', autoIncome); // Сохраняем autoIncome
+                updateShopButtons(); // Обновляем текст кнопок в магазине
             } else {
                 alert('Недостаточно средств!');
             }
