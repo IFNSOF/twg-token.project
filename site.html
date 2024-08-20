@@ -63,20 +63,20 @@
             background-color: white;
             z-index: 100;
             overflow: auto;
+            padding: 20px;
+            box-sizing: border-box;
         }
         #info-content, #shop-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
+            max-width: 600px;
+            margin: auto;
             padding: 20px;
+            background-color: white;
             border-radius: 10px;
             text-align: center;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         #close-info-button, #close-shop-button {
-            position: fixed;
+            position: absolute;
             top: 20px;
             right: 20px;
             padding: 10px 20px;
@@ -117,6 +117,7 @@
             <h2>Информация</h2>
             <p>Версия: 1.0</p>
             <p>Ник: <span id="player-name">Игрок</span></p>
+            <p id="vip-status">Статус: Обычный</p>
             <button id="telegram-button">Telegram</button>
             <button id="close-info-button">Закрыть</button>
         </div>
@@ -127,6 +128,7 @@
             <h2>Магазин</h2>
             <button id="upgrade-button">Улучшить (Цена: 10 TWG, +1 клик: 1)</button>
             <button id="auto-income-button">Купить автодоход (Цена: 50 TWG, +1 автодоход: 0)</button>
+            <button id="vip-button">Купить VIP статус (Цена: 100 TWG)</button>
             <button id="close-shop-button">Закрыть</button>
         </div>
     </div>
@@ -136,16 +138,19 @@
         let pointsPerClick = parseInt(localStorage.getItem('pointsPerClick')) || 1;
         let autoIncome = parseInt(localStorage.getItem('autoIncome')) || 0;
         let playerName = localStorage.getItem('playerName') || 'Игрок';
+        let isVip = localStorage.getItem('isVip') === 'true'; // Проверяем VIP статус
 
         const clickButton = document.getElementById('click-button');
         const upgradeButton = document.getElementById('upgrade-button');
         const autoIncomeButton = document.getElementById('auto-income-button');
+        const vipButton = document.getElementById('vip-button');
         const scoreDisplay = document.getElementById('score');
         const shopButton = document.getElementById('shop-button');
         const shopPage = document.getElementById('shop-page');
         const infoButton = document.getElementById('info-button');
         const infoContainer = document.getElementById('info-container');
         const playerNameDisplay = document.getElementById('player-name');
+        const vipStatusDisplay = document.getElementById('vip-status');
         const closeInfoButton = document.getElementById('close-info-button');
         const closeShopButton = document.getElementById('close-shop-button');
         const telegramButton = document.getElementById('telegram-button');
@@ -154,6 +159,17 @@
         function updateScore() {
             scoreDisplay.textContent = 'Баланс: ' + score;
             localStorage.setItem('score', score);
+        }
+
+        // Обновление VIP статуса в профиле
+        function updateVipStatus() {
+            if (isVip) {
+                vipStatusDisplay.textContent = 'Статус: VIP';
+                pointsPerClick = pointsPerClick + 1; // Дополнительный клик для VIP
+            } else {
+                vipStatusDisplay.textContent = 'Статус: Обычный';
+            }
+            localStorage.setItem('pointsPerClick', pointsPerClick);
         }
 
         // Обработчик кликов по картинке
@@ -170,13 +186,11 @@
 
         // Обработчик клика по кнопке Магазина
         shopButton.addEventListener('click', function() {
-            window.open('', '_blank', 'width=100%,height=100%');
             shopPage.style.display = 'block';
         });
 
         // Обработчик клика по кнопке Информация
         infoButton.addEventListener('click', function() {
-            window.open('', '_blank', 'width=100%,height=100%');
             infoContainer.style.display = 'block';
         });
 
@@ -216,6 +230,7 @@
             if (score >= 10) {
                 score -= 10;
                 pointsPerClick++;
+                if (isVip) pointsPerClick++; // Дополнительный клик для VIP
                 updateScore();
                 upgradeButton.textContent = 'Улучшить (Цена: 10 TWG, +1 клик: ' + pointsPerClick + ')';
             } else {
@@ -236,16 +251,33 @@
             }
         });
 
+        // Обработчик клика по кнопке VIP
+        vipButton.addEventListener('click', function() {
+            if (score >= 100 && !isVip) {
+                score -= 100;
+                isVip = true;
+                updateScore();
+                localStorage.setItem('isVip', 'true');
+                updateVipStatus(); // Обновляем статус VIP
+            } else if (isVip) {
+                alert('У вас уже есть VIP статус!');
+            } else {
+                alert('Недостаточно средств!');
+            }
+        });
+
         // Сохранение данных в localStorage при выходе с сайта
         window.addEventListener('beforeunload', function() {
             localStorage.setItem('score', score);
             localStorage.setItem('pointsPerClick', pointsPerClick);
             localStorage.setItem('autoIncome', autoIncome);
             localStorage.setItem('playerName', playerName);
+            localStorage.setItem('isVip', isVip);
         });
 
-        // Обновляем счет при загрузке страницы
+        // Обновляем счет и статус VIP при загрузке страницы
         updateScore();
+        updateVipStatus();
         playerNameDisplay.textContent = playerName;
     </script>
 
