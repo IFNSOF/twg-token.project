@@ -86,6 +86,10 @@
             background-color: #333; /* Темно-серый фон */
             border: none; /* Убираем границу */
         }
+        #shop-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
         #telegram-button {
             padding: 10px 20px;
             font-size: 18px;
@@ -103,15 +107,11 @@
 <body>
 
     <div id="score">Баланс: 0 TWG</div>
-
     <div id="click-button">
         <img id="click-image" src="money.png" alt="Клик">
     </div>
-
     <button id="shop-button">Магазин</button>
-
     <button id="info-button">Информация</button>
-
     <div id="info-container">
         <div id="info-content">
             <h2>Информация</h2>
@@ -125,9 +125,11 @@
 
     <div id="shop-page">
         <div id="shop-content">
-            <h2>Магазин</h2>
+            <h2 id="shop-title">Магазин</h2>
             <button id="upgrade-button">Улучшить (Цена: 10 TWG, +1 клик: 1)</button>
             <button id="auto-income-button">Купить автодоход (Цена: 50 TWG, +1 автодоход: 0)</button>
+            <button id="extra-points-button">Купить дополнительные очки (Цена: 20 TWG, +10 очков)</button>
+            <button id="double-points-button">Купить двойные очки на 60 секунд (Цена: 30 TWG)</button>
             <button id="vip-button">Купить VIP статус (Цена: 100 TWG)</button>
             <button id="close-shop-button">Закрыть</button>
         </div>
@@ -143,6 +145,8 @@
         const clickButton = document.getElementById('click-button');
         const upgradeButton = document.getElementById('upgrade-button');
         const autoIncomeButton = document.getElementById('auto-income-button');
+        const extraPointsButton = document.getElementById('extra-points-button');
+        const doublePointsButton = document.getElementById('double-points-button');
         const vipButton = document.getElementById('vip-button');
         const scoreDisplay = document.getElementById('score');
         const shopButton = document.getElementById('shop-button');
@@ -251,6 +255,28 @@
             }
         });
 
+        // Обработчик клика по кнопке дополнительных очков
+        extraPointsButton.addEventListener('click', function() {
+            if (score >= 20) {
+                score -= 20;
+                score += 10; // Добавляем дополнительные очки
+                updateScore();
+            } else {
+                alert('Недостаточно средств!');
+            }
+        });
+
+        // Обработчик клика по кнопке двойных очков
+        doublePointsButton.addEventListener('click', function() {
+            if (score >= 30) {
+                score -= 30;
+                // Здесь можно добавить логику для двойных очков на 60 секунд
+                updateScore();
+            } else {
+                alert('Недостаточно средств!');
+            }
+        });
+
         // Обработчик клика по кнопке VIP
         vipButton.addEventListener('click', function() {
             if (score >= 100 && !isVip) {
@@ -280,6 +306,5 @@
         updateVipStatus();
         playerNameDisplay.textContent = playerName;
     </script>
-
 </body>
 </html>
