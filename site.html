@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TWG TOKEN</title>
     <style>
-        /* Ваши стили остаются без изменений */
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 50px;
             overflow: hidden;
-            background-color: #f0f0f0;
+            background-color: #f0f0f0; /* Изменить на серый цвет */
         }
         #score {
             font-size: 36px;
@@ -38,7 +37,7 @@
             width: 200px;
             height: 200px;
         }
-        #shop-button, #upgrade-button, #auto-income-button, #info-button, #close-info-button, #close-shop-button {
+        #shop-button, #info-button {
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
@@ -56,20 +55,10 @@
         #buttons-container {
             margin-top: 100px;
         }
-        #shop-button {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-        }
-        #info-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-        }
         footer {
             display: none;
         }
-        #info-container {
+        #info-container, #shop-page {
             display: none;
             position: fixed;
             top: 0;
@@ -83,7 +72,7 @@
             text-align: center;
             overflow: auto;
         }
-        #info-content {
+        #info-content, #shop-content {
             position: relative;
             top: 50%;
             transform: translateY(-50%);
@@ -91,37 +80,10 @@
             color: black;
             padding: 20px;
             border-radius: 10px;
+            width: 90%; /* Уменьшить ширину для центрации */
+            max-width: 600px; /* Максимальная ширина */
         }
-        #close-info-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-        }
-        #shop-page {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            color: white;
-            z-index: 100;
-            padding: 20px;
-            text-align: center;
-            overflow: auto;
-        }
-        #shop-content {
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: white;
-            color: black;
-            padding: 20px;
-            border-radius: 10px;
-        }
-        #close-shop-button {
+        #close-info-button, #close-shop-button {
             position: absolute;
             top: 20px;
             right: 20px;
@@ -136,180 +98,154 @@
             background-color: #333;
             border: none;
         }
+        #telegram-image {
+            width: 50px; /* Размер картинки */
+            cursor: pointer; /* Плавный курсор для изображения */
+        }
     </style>
 </head>
 <body>
 
-    <div id="score">Баланс: 0 TWG</div>
-
-    <div id="click-button">
-        <img id="click-image" src="money.png" alt="Клик">
+<div id="score">Баланс: 0 TWG</div>
+<div id="click-button">
+    <img id="click-image" src="money.png" alt="Клик">
+</div>
+<button id="shop-button">Магазин</button>
+<button id="info-button">Информация</button>
+<div id="info-container">
+    <div id="info-content">
+        <h2>Информация</h2>
+        <p>Версия: 1.0</p>
+        <p>Ник: <span id="player-name">Игрок</span></p>
+        <button id="close-info-button">Закрыть</button>
+        <img id="telegram-image" src="telegram.png" alt="Telegram" onclick="openTelegram()">
     </div>
-
-    <button id="shop-button">Магазин</button>
-
-    <button id="info-button">Информация</button>
-
-    <div id="info-container">
-        <div id="info-content">
-            <h2>Информация</h2>
-            <p>Версия: 1.0</p>
-            <p>Ник: <span id="player-name">Игрок</span></p>
-            <button id="close-info-button">Закрыть</button>
-            <button id="telegram-button">Telegram</button>
-        </div>
+</div>
+<div id="shop-page">
+    <div id="shop-content">
+        <h2>Магазин</h2>
+        <button id="upgrade-button">Улучшить (Цена: 10 TWG, +1 клик: 1)</button>
+        <button id="auto-income-button">Купить автодоход (Цена: 50 TWG, +1 автодоход: 0)</button>
+        <button id="close-shop-button">Закрыть</button>
     </div>
+</div>
 
-    <div id="shop-page">
-        <div id="shop-content">
-            <h2>Магазин</h2>
-            <button id="upgrade-button">Улучшить (Цена: 10 TWG, +1 клик: 1)</button>
-            <button id="auto-income-button">Купить автодоход (Цена: 50 TWG, +1 автодоход: 0)</button>
-            <button id="close-shop-button">Закрыть</button>
-        </div>
-    </div>
+<script>
+    let score = parseInt(localStorage.getItem('score')) || 0;
+    let pointsPerClick = parseInt(localStorage.getItem('pointsPerClick')) || 1;
+    let autoIncome = parseInt(localStorage.getItem('autoIncome')) || 0;
+    let lastVisitTime = parseInt(localStorage.getItem('lastVisitTime')) || Date.now();
+    let playerName = localStorage.getItem('playerName') || 'Игрок';
 
-    <script>
-        let score = parseInt(localStorage.getItem('score')) || 0;
-        let pointsPerClick = parseInt(localStorage.getItem('pointsPerClick')) || 1;
-        let autoIncome = parseInt(localStorage.getItem('autoIncome')) || 0;
-        let lastVisitTime = parseInt(localStorage.getItem('lastVisitTime')) || Date.now();
-        let playerName = localStorage.getItem('playerName') || 'Игрок';
+    const clickButton = document.getElementById('click-button');
+    const upgradeButton = document.getElementById('upgrade-button');
+    const autoIncomeButton = document.getElementById('auto-income-button');
+    const scoreDisplay = document.getElementById('score');
+    const shopButton = document.getElementById('shop-button');
+    const shopPage = document.getElementById('shop-page');
+    const infoButton = document.getElementById('info-button');
+    const infoContainer = document.getElementById('info-container');
+    const playerNameDisplay = document.getElementById('player-name');
+    const closeInfoButton = document.getElementById('close-info-button');
+    const closeShopButton = document.getElementById('close-shop-button');
 
-        const clickButton = document.getElementById('click-button');
-        const upgradeButton = document.getElementById('upgrade-button');
-        const autoIncomeButton = document.getElementById('auto-income-button');
-        const scoreDisplay = document.getElementById('score');
-        const shopButton = document.getElementById('shop-button');
-        const shopPage = document.getElementById('shop-page');
-        const infoButton = document.getElementById('info-button');
-        const infoContainer = document.getElementById('info-container');
-        const playerNameDisplay = document.getElementById('player-name');
-        const closeInfoButton = document.getElementById('close-info-button');
-        const closeShopButton = document.getElementById('close-shop-button');
-        const telegramButton = document.getElementById('telegram-button');
+    function openTelegram() {
+        window.open('https://t.me/Tweegy_Project');
+    }
 
-        // Обновление отображения счета
-        function updateScore() {
-            scoreDisplay.textContent = 'Баланс: ' + score;
-            localStorage.setItem('score', score);
-        }
+    // Обновление отображения счета
+    function updateScore() {
+        scoreDisplay.textContent = 'Баланс: ' + score;
+        localStorage.setItem('score', score);
+    }
 
-        // Обновление кнопок в магазине
-        function updateShopButtons() {
-            upgradeButton.textContent = 'Улучшить (Цена: 10 TWG, +1 клик: ' + pointsPerClick + ')';
-            autoIncomeButton.textContent = 'Купить автодоход (Цена: 50 TWG, +1 автодоход: ' + autoIncome + ')';
-        }
+    // Обновление кнопок в магазине
+    function updateShopButtons() {
+        upgradeButton.textContent = 'Улучшить (Цена: 10 TWG, +1 клик: ' + pointsPerClick + ')';
+        autoIncomeButton.textContent = 'Купить автодоход (Цена: 50 TWG, +1 автодоход: ' + autoIncome + ')';
+    }
 
-        // Вычисляем заработанные очки за время отсутствия
-        function calculateOfflineIncome() {
-            const currentTime = Date.now();
-            const timeDifference = currentTime - lastVisitTime;
-            const earnedIncome = Math.floor(timeDifference / 1000) * autoIncome;
-            score += earnedIncome;
-            updateScore();
-            localStorage.setItem('lastVisitTime', currentTime);
-        }
-
-        // Обработчик кликов по картинке
-        clickButton.addEventListener('click', function() {
-            score += pointsPerClick;
-            updateScore();
-        });
-
-        // Функция автодохода (вызывается каждые 1000 миллисекунд (1 секунда))
-        function autoIncomeFunction() {
-            score += autoIncome;
-            updateScore();
-        }
-
-        // Обработчик клика по кнопке Магазина
-        shopButton.addEventListener('click', function() {
-            shopPage.style.display = 'block';
-            updateShopButtons(); // Обновляем текст кнопок в магазине
-        });
-
-        // Обработчик клика по кнопке информации
-        infoButton.addEventListener('click', function() {
-            infoContainer.style.display = 'block';
-        });
-
-        // Обработчик клика по кнопке "Закрыть" для информации
-        closeInfoButton.addEventListener('click', function() {
-            infoContainer.style.display = 'none';
-        });
-
-        // Обработчик клика по кнопке "Закрыть" для магазина
-        closeShopButton.addEventListener('click', function() {
-            shopPage.style.display = 'none';
-        });
-
-        // Обработчик клика по кнопке Телеграм
-        telegramButton.addEventListener('click', function() {
-            window.open('https://t.me/Tweegy_Project');
-        });
-
-        // Функция для изменения ника игрока
-        function changePlayerName() {
-            let newName = prompt("Введите новый ник:");
-            if (newName) {
-                playerName = newName;
-                playerNameDisplay.textContent = playerName;
-                localStorage.setItem('playerName', playerName);
-            }
-        }
-
-        // Добавляем возможность изменения ника
-        playerNameDisplay.addEventListener('click', changePlayerName);
-
-        // Запускаем автодоход
-        setInterval(autoIncomeFunction, 1000);
-
-        // Вычисляем доход за время отсутствия при загрузке страницы
-        calculateOfflineIncome();
-
-        // Обновляем кнопки магазина при загрузке страницы
-        updateShopButtons();
-
-        // Обработчик клика по кнопке улучшения
-        upgradeButton.addEventListener('click', function() {
-            if (score >= 10) {
-                score -= 10;
-                pointsPerClick++;
-                updateScore();
-                localStorage.setItem('pointsPerClick', pointsPerClick); // Сохраняем pointsPerClick
-                updateShopButtons(); // Обновляем текст кнопок в магазине
-            } else {
-                alert('Недостаточно средств!');
-            }
-        });
-
-        // Обработчик клика по кнопке автодохода
-        autoIncomeButton.addEventListener('click', function() {
-            if (score >= 50) {
-                score -= 50;
-                autoIncome++;
-                updateScore();
-                localStorage.setItem('autoIncome', autoIncome); // Сохраняем autoIncome
-                updateShopButtons(); // Обновляем текст кнопок в магазине
-            } else {
-                alert('Недостаточно средств!');
-            }
-        });
-
-        // Сохранение данных в localStorage при выходе с сайта
-        window.addEventListener('beforeunload', function() {
-            localStorage.setItem('score', score);
-            localStorage.setItem('pointsPerClick', pointsPerClick);
-            localStorage.setItem('autoIncome', autoIncome);
-            localStorage.setItem('lastVisitTime', Date.now());
-            localStorage.setItem('playerName', playerName);
-        });
-
-        // Обновляем счет при загрузке страницы
+    function calculateOfflineIncome() {
+        const currentTime = Date.now();
+        const timeDifference = currentTime - lastVisitTime;
+        const earnedIncome = Math.floor(timeDifference / 1000) * autoIncome;
+        score += earnedIncome;
         updateScore();
-        playerNameDisplay.textContent = playerName;
-    </script>
+        localStorage.setItem('lastVisitTime', currentTime);
+    }
 
+    // Обработчик кликов по картинке
+    clickButton.addEventListener('click', function() {
+        score += pointsPerClick;
+        updateScore();
+    });
+
+    function autoIncomeFunction() {
+        score += autoIncome;
+        updateScore();
+    }
+
+    // Обработчик клика по кнопке Магазина
+    shopButton.addEventListener('click', function() {
+        shopPage.style.display = 'block';
+        updateShopButtons();
+    });
+
+    // Обработчик клика по кнопке информации
+    infoButton.addEventListener('click', function() {
+        infoContainer.style.display = 'block';
+    });
+
+    // Обработчик клика по кнопке "Закрыть" для информации
+    closeInfoButton.addEventListener('click', function() {
+        infoContainer.style.display = 'none';
+    });
+
+    // Обработчик клика по кнопке "Закрыть" для магазина
+    closeShopButton.addEventListener('click', function() {
+        shopPage.style.display = 'none';
+    });
+
+    // Запускаем автодоход
+    setInterval(autoIncomeFunction, 1000);
+    calculateOfflineIncome();
+    updateShopButtons();
+    
+    upgradeButton.addEventListener('click', function() {
+        if (score >= 10) {
+            score -= 10;
+            pointsPerClick++;
+            updateScore();
+            localStorage.setItem('pointsPerClick', pointsPerClick);
+            updateShopButtons();
+        } else {
+            alert('Недостаточно средств!');
+        }
+    });
+
+    autoIncomeButton.addEventListener('click', function() {
+        if (score >= 50) {
+            score -= 50;
+            autoIncome++;
+            updateScore();
+            localStorage.setItem('autoIncome', autoIncome);
+            updateShopButtons();
+        } else {
+            alert('Недостаточно средств!');
+        }
+    });
+
+    // Сохранение данных в localStorage при выходе с сайта
+    window.addEventListener('beforeunload', function() {
+        localStorage.setItem('score', score);
+        localStorage.setItem('pointsPerClick', pointsPerClick);
+        localStorage.setItem('autoIncome', autoIncome);
+        localStorage.setItem('lastVisitTime', Date.now());
+        localStorage.setItem('playerName', playerName);
+    });
+
+    updateScore();
+    playerNameDisplay.textContent = playerName;
+</script>
 </body>
 </html>
