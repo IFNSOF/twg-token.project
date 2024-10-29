@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Wers Project</title>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js"></script>
+</head>
+<body>
+    <h1>Wers Project</h1>
+    <div id="auth">
+        <input type="text" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Пароль">
+        <button onclick="signUp()">Регистрация</button>
+        <button onclick="login()">Вход</button>
+    </div>
+    <div id="game" style="display:none;">
+        <h2>Нажмите кнопку:</h2>
+        <button onclick="incrementCounter()">Клик</button>
+        <p>Счетчик: <span id="counter">0</span></p>
+        <button onclick="logout()">Выйти</button>
+    </div>
+
+    <script>
+        // Вставьте сюда ваш конфигурационный объект Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBXQwxNc9nGqkcQ6RNZZ_fXBnxGANE58XE",
+            authDomain: "wers-tap.firebaseapp.com",
+            projectId: "wers-tap",
+            storageBucket: "wers-tap.appspot.com",
+            messagingSenderId: "939327582333",
+            appId: "1:939327582333:web:510e753cb406d084afc114",
+            databaseURL: "G-EG72N0KL7S"
+        };
+
+        // Инициализация Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Регистрация
+        function signUp() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    alert("Регистрация успешна");
+                    loadGame();
+                })
+                .catch(error => alert(error.message));
+        }
+
+        // Вход
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    alert("Вход успешен");
+                    loadGame();
+                    loadCounter();
+                })
+                .catch(error => alert(error.message));
+        }
+
+        // Загрузка игры
+        function loadGame() {
+            document.getElementById('auth').style.display = 'none';
+            document.getElementById('game').style.display = 'block';
+        }
+
+        // Выход из аккаунта
+        function logout() {
+            auth.signOut().then(() => {
+                document.getElementById('auth').style.display = 'block';
+                document.getElementById('game').style.display = 'none';
+            }).catch(error => alert(error.message));
+        }
+
+        // Счетчик
+        let counter = 0;
+        function loadCounter() {
+            const userId = auth.currentUser.uid;
+            database.ref('users/' + userId + '/counter').once('value')
+                .then(snapshot => {
+                    counter = snapshot.val() || 0;
+                    document.getElementById('counter').innerText = counter;
+                });
+        }
+
+        function incrementCounter() {
+            counter++;
+            document.getElementById('counter').innerText = counter;
+
+            const userId = auth.currentUser.uid;
+            database.ref('users/' + userId).set({
+                counter: counter
+            });
+        }
+    </script>
+</body>
+</html>
