@@ -6,7 +6,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Замените на ваш токен
-const token = 'YOUR_TELEGRAM_BOT_TOKEN';
+const token = '7819136498:AAHO9xsGV83PYIYUwHbBDsItOc72UO_IFv0';
 const bot = new TelegramBot(token, { polling: true });
 
 app.use(bodyParser.json());
