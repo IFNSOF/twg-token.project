@@ -17,4 +17,5 @@ workflows:
     artifacts:
       - build/ios/**/*.ipa
     publishing:
-      # Настройте публикацию, если хотите отправить приложение в App Store
+      artifact_hub:
+        enabled: true
