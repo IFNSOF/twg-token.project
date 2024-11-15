@@ -16,6 +16,3 @@ workflows:
         script: cordova build ios --release
     artifacts:
       - build/ios/**/*.ipa
-    publishing:
-      artifact_hub:
-        enabled: true
