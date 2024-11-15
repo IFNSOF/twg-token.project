@@ -1,0 +1,20 @@
+workflows:
+  ios-workflow:
+    name: iOS Workflow
+    environment:
+      vars:
+        CORDOVA_PLATFORM: ios
+      xcode: latest
+    scripts:
+      - name: Install Cordova
+        script: npm install -g cordova
+      - name: Install dependencies
+        script: npm install
+      - name: Add iOS platform
+        script: cordova platform add ios
+      - name: Build iOS app
+        script: cordova build ios --release
+    artifacts:
+      - build/ios/**/*.ipa
+    publishing:
+      # Настройте публикацию, если хотите отправить приложение в App Store
