@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Коликер Игра</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to bottom right, #1e3c72, #2a5298); /* Фон можно изменить */
+      color: white;
+      padding: 20px;
+    }
+
+    .balance {
+      font-size: 28px;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .clicker-button {
+      width: 120px;
+      height: 120px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border: 4px solid white;
+      border-radius: 50%;
+      margin: auto;
+      transition: transform 0.1s;
+    }
+
+    .clicker-button:active {
+      transform: scale(0.95);
+    }
+
+    .telegram-button {
+      padding: 12px 24px;
+      background-color: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 18px;
+      text-decoration: none;
+      margin-bottom: 20px;
+      transition: background 0.2s;
+    }
+
+    .telegram-button:hover {
+      background-color: #0077b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="balance">Баланс: <span id="balance">0</span></div>
+
+  <button class="clicker-button" onclick="increment()"></button>
+
+  <a href="https://t.me/your_channel_link" class="telegram-button" target="_blank">Telegram канал</a>
+
+  <script>
+    // Загрузка баланса из localStorage
+    let balance = localStorage.getItem('balance');
+    if (!balance) {
+      balance = 0;
+    } else {
+      balance = parseInt(balance);
+    }
+
+    document.getElementById('balance').textContent = balance;
+
+    function increment() {
+      balance += 1;
+      document.getElementById('balance').textContent = balance;
+      localStorage.setItem('balance', balance);
+    }
+  </script>
+
+</body>
+</html>
