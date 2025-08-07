@@ -1,0 +1,26 @@
+workflows:
+  cordova-app:
+    name: Test ios
+    environment:
+      vars:
+        CORDOVA_PLATFORM: ios   # или "android"
+      node: 16.20.0
+      xcode: latest
+    scripts:
+      - name: Установка зависимостей
+        script: |
+          npm install -g cordova
+          npm install
+      - name: Test ios
+        script: |
+          cordova platform add $CORDOVA_PLATFORM
+      - name: Test Ios
+        script: |
+          cordova build $CORDOVA_PLATFORM --release
+    artifacts:
+      - platforms/ios/build/**/*.ipa
+      - platforms/android/app/build/outputs/**/*.apk
+    publishing:
+      email:
+        recipients:
+          - your_email@example.com
